@@ -1,6 +1,4 @@
-Claro, aquí tienes un ejemplo de **README.md** en Markdown que explica paso a paso cómo instalar Node.js y npm en Ubuntu para correr tu proyecto Next.js en local:
 
-````markdown
 # My V0 Project
 
 Este proyecto está desarrollado con **Next.js** y **TypeScript**. A continuación se detallan las instrucciones para instalar Node.js y npm en Ubuntu y ejecutar el proyecto en local.
