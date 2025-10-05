@@ -1,5 +1,5 @@
 
-# My V0 Project
+# PROYECTO CASSIOPEA
 
 Este proyecto está desarrollado con **Next.js** y **TypeScript**. A continuación se detallan las instrucciones para instalar Node.js y npm en Ubuntu y ejecutar el proyecto en local.
 
