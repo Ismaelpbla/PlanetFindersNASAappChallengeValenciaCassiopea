@@ -20,7 +20,6 @@ export function ResultsPanel({ data }: ResultsPanelProps) {
 
   return (
     <div>
-      <h2 className="text-3xl font-bold mb-8">Results</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {results.map((result) => (
           <Card key={result.label} className={`${result.color} border-0 p-8 text-center`}>

@@ -1,6 +1,6 @@
 "use client"
 
-import { Telescope, Cpu, UserCheck, CheckCircle2 } from "lucide-react"
+import { Telescope, Cpu, Brain, UserCheck } from "lucide-react"
 import { Card } from "@/components/ui/card"
 
 export function AboutPanel() {
@@ -8,62 +8,56 @@ export function AboutPanel() {
     {
       icon: Telescope,
       number: "01",
-      title: "Observation & Data Acquisition",
+      title: "Observation and Data Acquisition",
       sections: [
         {
-          subtitle: "Space Missions",
-          description:
-            "NASA satellites like Kepler and TESS continuously record light curves from thousands of stars in space.",
-        },
-        {
-          subtitle: "Transit Signal",
-          description: "Periodic dips in brightness indicate a planet transiting in front of its host star.",
+          subtitle: "Missions",
+          description: "NASA satellites, such as Kepler and TESS, record the light of thousands of stars.",
         },
       ],
     },
     {
       icon: Cpu,
       number: "02",
-      title: "Processing & Automated Classification (AI)",
+      title: "Processing",
       sections: [
         {
-          subtitle: "Data Preparation",
+          subtitle: "Light curves",
           description:
-            "Light curves are cleaned (removing noise and variability) and hundreds of features and patterns are extracted for analysis.",
+            "Drops in brightness are searched for, which indicate that a planet is transiting in front of its star.",
         },
         {
-          subtitle: "ML Classification",
+          subtitle: "Preparation",
+          description: "The light curve is cleaned and features are extracted for analysis.",
+        },
+      ],
+    },
+    {
+      icon: Brain,
+      number: "03",
+      title: "Machine Learning (AI)",
+      sections: [
+        {
+          subtitle: "Advanced ML Algorithms",
           description:
-            "Advanced Machine Learning algorithms (like Ensemble models or Gradient Boosted Trees) analyze these features to automatically identify and classify the most probable exoplanet candidates.",
+            "Advanced ML algorithms (such as ExoMiner) analyze these features to automatically identify and classify the most likely exoplanet candidates.",
         },
       ],
     },
     {
       icon: UserCheck,
-      number: "03",
-      title: "Vetting & Human Validation",
+      number: "04",
+      title: "Human Validation",
       sections: [
-        {
-          subtitle: "Need for Vetting",
-          description:
-            "Despite AI precision, transit detection has a high false positive rate (like eclipsing binaries). AI only selects the most important cases for review.",
-        },
         {
           subtitle: "Expert Review",
           description:
-            "Expert astronomers perform manual validation (vetting) of candidates, inspecting light curves through visual tools to rule out false positive hypotheses.",
+            "Despite the accuracy of AI, transit detection has a high rate of false positives (such as eclipsing binaries). AI only selects the most important cases for review.",
         },
-      ],
-    },
-    {
-      icon: CheckCircle2,
-      number: "04",
-      title: "Final Classification",
-      sections: [
         {
-          subtitle: "Archive Status",
+          subtitle: "Manual Validation",
           description:
-            "The Kepler Object of Interest (KOI) receives its final classification, maintained in the data archive:",
+            "A minimum of 3 expert astronomers perform manual validation of the remaining candidates, inspecting the light curves manually. They are archived into three types:",
         },
       ],
     },
@@ -72,9 +66,9 @@ export function AboutPanel() {
   return (
     <div className="max-w-6xl mx-auto space-y-12 pb-12">
       <div className="text-center mb-16">
-        <h2 className="text-4xl font-bold mb-4">How ExoMiner Works</h2>
+        <h2 className="text-4xl font-bold mb-4">Exoplanet Discovery Flow</h2>
         <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          From light to exoplanet: the complete pipeline for discovering worlds beyond our solar system
+          From observation to validation: the complete pipeline for discovering worlds beyond our solar system
         </p>
       </div>
 
@@ -123,7 +117,7 @@ export function AboutPanel() {
                         <div className="w-2 h-2 rounded-full bg-yellow-400 mt-2" />
                         <div>
                           <div className="font-bold text-yellow-400 mb-1">CANDIDATE</div>
-                          <div className="text-sm text-yellow-300/70">Candidate pending additional validation</div>
+                          <div className="text-sm text-yellow-300/70">Needs review or more data</div>
                         </div>
                       </div>
                     </div>

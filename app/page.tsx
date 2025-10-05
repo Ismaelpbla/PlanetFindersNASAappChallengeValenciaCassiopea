@@ -15,10 +15,24 @@ export default function ExoMinerDashboard() {
   const [analyzedData, setAnalyzedData] = useState<ExoplanetData[]>([])
   const [selectedStar, setSelectedStar] = useState<string | null>(null)
 
-  const handleAnalyze = async (ticId: string, sector: number) => {
-    const result = await analyzeStarWithExoMiner(ticId, sector)
+  const handleAnalyze = async (
+    ticId: string,
+    sector: number,
+    devOptions?: {
+      status?: "exoplanet" | "candidate" | "false-positive"
+      planetType?: "Terrestrial" | "Super Earth" | "Neptune-Like" | "Gas Giant"
+      falsePositiveType?:
+        | "Eclipsing Binary"
+        | "Background Eclipsing Binary"
+        | "Grazing Eclipsing Binary"
+        | "Instrumental Artifact"
+        | "Stellar Variability"
+        | "Contamination"
+    },
+  ) => {
+    const result = await analyzeStarWithExoMiner(ticId, sector, devOptions)
     setAnalyzedData((prev) => [result, ...prev])
-    setSelectedStar(result.ticId)
+    setSelectedStar(`${result.ticId}/${result.sector}`)
   }
 
   const handleSelectRow = (ticId: string) => {
@@ -26,13 +40,13 @@ export default function ExoMinerDashboard() {
     setActiveTab("dashboard")
   }
 
-  const selectedData = analyzedData.find((d) => d.ticId === selectedStar)
+  const selectedData = analyzedData.find((d) => `${d.ticId}/${d.sector}` === selectedStar)
 
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border px-8 py-8">
         <h1 className="text-5xl font-bold text-balance leading-tight">
-          ExoMiner <span className="text-primary">Exoplanet Detection</span>
+          CassiopeAI <span className="text-primary">Exoplanet Detection</span>
         </h1>
         <p className="text-muted-foreground mt-2 text-lg">
           AI-powered exoplanet discovery using NASA's TESS mission data
@@ -46,7 +60,7 @@ export default function ExoMinerDashboard() {
               {[
                 { id: "analysis", label: "Analysis" },
                 { id: "dashboard", label: "Dashboard" },
-                { id: "results", label: "Results" },
+                { id: "Summary", label: "Summary" },
                 { id: "about", label: "About" },
               ].map((tab) => (
                 <button
@@ -73,11 +87,11 @@ export default function ExoMinerDashboard() {
                   <SelectContent className="bg-card border-2 border-primary/30 rounded-xl shadow-2xl">
                     {analyzedData.map((data) => (
                       <SelectItem
-                        key={data.ticId}
-                        value={data.ticId}
+                        key={`${data.ticId}/${data.sector}`}
+                        value={`${data.ticId}/${data.sector}`}
                         className="rounded-lg hover:bg-primary/20 font-medium"
                       >
-                        {data.ticId}
+                        {data.ticId} / Sector {data.sector}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -96,7 +110,7 @@ export default function ExoMinerDashboard() {
           </div>
         )}
         {activeTab === "dashboard" && <DashboardPanel starId={selectedStar} data={selectedData} />}
-        {activeTab === "results" && <ResultsPanel data={analyzedData} />}
+        {activeTab === "Summary" && <ResultsPanel data={analyzedData} />}
         {activeTab === "about" && <AboutPanel />}
       </main>
     </div>

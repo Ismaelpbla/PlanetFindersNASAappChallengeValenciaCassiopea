@@ -9,7 +9,14 @@ export interface ExoplanetData {
   ra: number
   dec: number
   status: "exoplanet" | "candidate" | "false-positive"
-  planetType?: "Terrestre" | "Super Tierra" | "Tipo Neptuno" | "Gigante Gaseoso"
+  planetType?: "Terrestrial" | "Super Earth" | "Neptune-Like" | "Gas Giant"
+  falsePositiveType?:
+    | "Eclipsing Binary"
+    | "Background Eclipsing Binary"
+    | "Grazing Eclipsing Binary"
+    | "Instrumental Artifact"
+    | "Stellar Variability"
+    | "Contamination"
   stellarParameters: {
     teff: number
     logg: number
@@ -29,7 +36,8 @@ export interface ExoplanetData {
     depth: number
   }
   lightCurve: { time: number; flux: number }[]
-  foldedPhase: { phase: number; flux: number }[]
+  phaseDays: { phase: number; flux: number }[]
+  phaseHours: { phase: number; flux: number }[]
   features: {
     name: string
     importance: number
