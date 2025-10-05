@@ -94,7 +94,6 @@ npm start
 
 ## 6. Créditos
 
-* Proyecto desarrollado por [Tu Nombre] y colaboradores.
 * Basado en Next.js, TypeScript y TailwindCSS.
 * Proyecto desarrollado por:
     - Yasmin Boudghene-Stambouli @StYasmin
