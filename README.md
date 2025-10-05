@@ -96,3 +96,8 @@ npm start
 
 * Proyecto desarrollado por [Tu Nombre] y colaboradores.
 * Basado en Next.js, TypeScript y TailwindCSS.
+* Proyecto desarrollado por:
+    - Yasmin Boudghene-Stambouli @StYasmin
+    - Firas Amine @mellamofiras
+    - Paris Martinez @parismart
+    - Ismael Pérez @Ismaelpbla
