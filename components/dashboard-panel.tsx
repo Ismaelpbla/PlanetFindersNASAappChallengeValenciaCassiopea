@@ -63,8 +63,14 @@ export function DashboardPanel({ starId, data }: DashboardPanelProps) {
             <img src={starImage || "/placeholder.svg"} alt="Star field" className="w-full h-full object-cover" />
           </div>
           <div className="mt-4 md:mt-6 text-center">
-            <h2 className="text-2xl md:text-3xl font-bold">{data.ticId}</h2>
-            <p className="text-sm md:text-base text-muted-foreground mt-1">Sector {data.sector}</p>
+            <h2 className="text-2xl md:text-3xl font-bold">{data.ticId.replace(/^(TIC|KIC|EPIC)\s*/, "")}</h2>
+            <p className="text-sm md:text-base text-muted-foreground mt-1">
+              {data.ticId.startsWith("KIC")
+                ? ""
+                : data.ticId.startsWith("EPIC")
+                  ? `Campaign ${data.sector}`
+                  : `Sector ${data.sector}`}
+            </p>
           </div>
         </Card>
 
@@ -183,15 +189,11 @@ export function DashboardPanel({ starId, data }: DashboardPanelProps) {
           </div>
           <div>
             <div className="text-xs md:text-sm text-muted-foreground mb-2 font-medium">Surface Gravity (log g)</div>
-            <div className="text-xl md:text-2xl font-bold text-primary">
-               {data.stellarParameters.logg.toFixed(5)}
-            </div>
+            <div className="text-xl md:text-2xl font-bold text-primary">{data.stellarParameters.logg.toFixed(5)}</div>
           </div>
           <div>
             <div className="text-xs md:text-sm text-muted-foreground mb-2 font-medium">Metallicity (Fe/H)</div>
-            <div className="text-xl md:text-2xl font-bold text-primary">
-              {data.stellarParameters.feh.toFixed(5)}
-            </div>
+            <div className="text-xl md:text-2xl font-bold text-primary">{data.stellarParameters.feh.toFixed(5)}</div>
           </div>
           <div>
             <div className="text-xs md:text-sm text-muted-foreground mb-2 font-medium">Stellar Radius</div>

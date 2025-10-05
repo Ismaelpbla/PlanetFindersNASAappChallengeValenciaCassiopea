@@ -5,12 +5,49 @@ import type { ExoplanetData } from "@/types/exoplanet"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import { HelpCircle } from "lucide-react"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 interface AnalysisTableProps {
   data: ExoplanetData[]
   selectedId: string | null
-  onSelectRow: (ticId: string) => void
+  onSelectRow: (ticId: string, sector: number) => void
 }
+
+const columnDescriptions: Record<string, string> = {
+  id: "Unique identifier of the star in the mission catalog.",
+  sector: "Number of the sky sector observed by the TESS telescope.",
+  probability: "Estimated probability that the object is a real exoplanet.",
+  status: "Validation status of the candidate: confirmed, candidate, or false positive.",
+  teff: "Effective temperature of the star in kelvin; indicates how hot its surface is.",
+  logg: "Stellar surface gravity (in base 10 logarithm); helps distinguish star types.",
+  feh: "Metallicity: iron-to-hydrogen ratio, measures the chemical richness of the star.",
+  radius: "Radius of the star in solar radii (compared to the Sun).",
+  mass: "Mass of the star in solar masses (compared to the Sun).",
+  gaiaRuwe: "Quality indicator of Gaia's astrometric fit; high values may suggest binarity or errors.",
+  dvr: "Difference between observed and expected radial velocity; used to detect orbital variations.",
+  dvrUncertainty: "Uncertainty associated with the DVR measurement.",
+  dvrFlag: "Quality mark or warning about DVR reliability.",
+  period: "Time it takes the planet to complete one orbit (in days).",
+  duration: "Duration of the observed transit (in hours).",
+  depth: "Percentage of light that decreases during transit; indicates the relative size of the planet.",
+}
+
+const ColumnHeader = ({ label, description }: { label: string; description: string }) => (
+  <div className="flex items-center gap-1.5">
+    <span>{label}</span>
+    <TooltipProvider delayDuration={200}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <HelpCircle className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground cursor-help transition-colors" />
+        </TooltipTrigger>
+        <TooltipContent side="top" className="max-w-xs bg-zinc-900 border-white/20 text-sm text-white">
+          <p>{description}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  </div>
+)
 
 export function AnalysisTable({ data, selectedId, onSelectRow }: AnalysisTableProps) {
   const [showStellarParams, setShowStellarParams] = useState(false)
@@ -21,9 +58,18 @@ export function AnalysisTable({ data, selectedId, onSelectRow }: AnalysisTablePr
   if (data.length === 0) {
     return (
       <div className="rounded-lg border border-white/10 bg-white/5 p-12 text-center">
-        <p className="text-muted-foreground">No analyses performed yet. Enter a TIC ID and sector to begin.</p>
+        <p className="text-muted-foreground">
+          No analyses performed yet. Select a target from the Analysis tab to begin.
+        </p>
       </div>
     )
+  }
+
+  const formatId = (ticId: string) => {
+    // Remove TIC prefix if present and add space after other prefixes
+    const withoutTic = ticId.replace(/^TIC\s*/, "")
+    // Add space after KIC, EPIC, or other prefixes
+    return withoutTic.replace(/^(KIC|EPIC|[A-Z]+)(\d)/, "$1 $2")
   }
 
   const getStatusBadge = (status: ExoplanetData["status"]) => {
@@ -94,32 +140,66 @@ export function AnalysisTable({ data, selectedId, onSelectRow }: AnalysisTablePr
           <table className="w-full">
             <thead>
               <tr className="border-b border-white/10 bg-white/5">
-                <th className="px-4 py-3 text-left text-sm font-medium">TIC ID</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Sector</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Probability</th>
-                <th className="px-4 py-3 text-left text-sm font-medium">Status</th>
+                <th className="px-4 py-3 text-left text-sm font-medium">
+                  <ColumnHeader label="ID" description={columnDescriptions.id} />
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium">
+                  <ColumnHeader label="Sector" description={columnDescriptions.sector} />
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium">
+                  <ColumnHeader label="Probability" description={columnDescriptions.probability} />
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium">
+                  <ColumnHeader label="Status" description={columnDescriptions.status} />
+                </th>
                 {showStellarParams && (
                   <>
-                    <th className="px-4 py-3 text-left text-sm font-medium">Teff (K)</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium">Log g</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium">[Fe/H]</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium">Radius (R☉)</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium">Mass (M☉)</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      <ColumnHeader label="Teff (K)" description={columnDescriptions.teff} />
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      <ColumnHeader label="Log g" description={columnDescriptions.logg} />
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      <ColumnHeader label="[Fe/H]" description={columnDescriptions.feh} />
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      <ColumnHeader label="Radius (R☉)" description={columnDescriptions.radius} />
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      <ColumnHeader label="Mass (M☉)" description={columnDescriptions.mass} />
+                    </th>
                   </>
                 )}
-                {showGaiaRuwe && <th className="px-4 py-3 text-left text-sm font-medium">Gaia RUWE</th>}
+                {showGaiaRuwe && (
+                  <th className="px-4 py-3 text-left text-sm font-medium">
+                    <ColumnHeader label="Gaia RUWE" description={columnDescriptions.gaiaRuwe} />
+                  </th>
+                )}
                 {showSpocDvr && (
                   <>
-                    <th className="px-4 py-3 text-left text-sm font-medium">DVR</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium">DVR Uncertainty</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium">DVR Flag</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      <ColumnHeader label="DVR" description={columnDescriptions.dvr} />
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      <ColumnHeader label="DVR Uncertainty" description={columnDescriptions.dvrUncertainty} />
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      <ColumnHeader label="DVR Flag" description={columnDescriptions.dvrFlag} />
+                    </th>
                   </>
                 )}
                 {showTce && (
                   <>
-                    <th className="px-4 py-3 text-left text-sm font-medium">Period (d)</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium">Duration (h)</th>
-                    <th className="px-4 py-3 text-left text-sm font-medium">Depth (%)</th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      <ColumnHeader label="Period (d)" description={columnDescriptions.period} />
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      <ColumnHeader label="Duration (h)" description={columnDescriptions.duration} />
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      <ColumnHeader label="Depth (%)" description={columnDescriptions.depth} />
+                    </th>
                   </>
                 )}
               </tr>
@@ -128,12 +208,12 @@ export function AnalysisTable({ data, selectedId, onSelectRow }: AnalysisTablePr
               {data.map((item) => (
                 <tr
                   key={item.ticId}
-                  onClick={() => onSelectRow(item.ticId)}
+                  onClick={() => onSelectRow(item.ticId, item.sector)}
                   className={`border-b border-white/5 cursor-pointer transition-colors ${
-                    selectedId === item.ticId ? "bg-teal-600/20" : "hover:bg-white/5"
+                    selectedId === `${item.ticId}/${item.sector}` ? "bg-teal-600/20" : "hover:bg-white/5"
                   }`}
                 >
-                  <td className="px-4 py-3 font-mono text-sm">{item.ticId}</td>
+                  <td className="px-4 py-3 font-mono text-sm">{formatId(item.ticId)}</td>
                   <td className="px-4 py-3 text-sm">{item.sector}</td>
                   <td className="px-4 py-3 text-sm">
                     <span className="font-semibold">{(item.probability * 100).toFixed(2)}%</span>
